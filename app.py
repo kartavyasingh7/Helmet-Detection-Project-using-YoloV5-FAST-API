@@ -3,21 +3,33 @@ from fastapi.responses import JSONResponse
 import torch
 from PIL import Image
 import io
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 model = None  
+origins = [
+    "http://localhost:3000",  # React frontend running locally
+    # You can add more origins if you need
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allow requests from the frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
 
 @app.on_event("startup")
 def load_model():
     global model
     model = torch.hub.load(
-        'ultralytics/yolov5',
-        'custom',
-        path='C:/Users/Acer/Desktop/Project/yolov5/runs/train/exp6/weights/best.pt'
-
-        force_reload=True
-    )
-
+    'ultralytics/yolov5', 
+    'custom', 
+    path='C:/Users/Acer/Desktop/Project/yolov5/runs/train/exp6/weights/best.pt', 
+    force_reload=True
+)
 @app.post("/detect")
 async def detect_helmet(file: UploadFile = File(...)):
     try:
@@ -29,3 +41,5 @@ async def detect_helmet(file: UploadFile = File(...)):
         return JSONResponse(content={"detections": filtered})
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
+    
+
