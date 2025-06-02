@@ -8,16 +8,16 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 model = None  
 origins = [
-    "http://localhost:3000",  # React frontend running locally
-    # You can add more origins if you need
+    "http://localhost:3000",  
+    
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,  # Allow requests from the frontend origin
+    allow_origins=origins,  
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"], 
+    allow_headers=["*"],  
 )
 
 
